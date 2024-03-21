@@ -1,168 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Recherche Magasin</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Custom CSS for the page -->
-  <style>
-    /* Customize your title styles here */
-    #title {
-      text-align: center;
-      font-size: 35px;
-      margin: 30px 30px;
-      font-family: fangsong;
-    }
-    label {
-      font-weight: 600;
-    }
-    /* Customize your table styles here */
-    .table-responsive {
-      max-height: 296px;
-      overflow-y: auto;
-      margin-bottom: 30px;
-      overflow-y: scroll;
-    }
-    .custom-table {
-      width: 100%;
-    }
-    .container {
-      margin-top: 50px;
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    #file-input-trigger {
-      margin-top: 20px;
-    }
-    /* Customize your footer styles here */
-    footer {
-      position: fixed;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      padding: 15px 0;
-      bottom: 0;
-      width: 100%;
-    }
-    footer p {
-      margin: 0;
-    }
-    /* Responsive Styles */
-    @media only screen and (max-width: 600px) {
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recherche Magasin</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Custom CSS for the page -->
+    <style>
+      bodY {
+        background-color: #efefef;
+      }
+      /* Customize your title styles here */
+      #title {
+        text-align: center;
+        font-size: 35px;
+        margin: 30px 30px;
+        font-family: fangsong;
+      }
+      label {
+        font-weight: 600;
+      }
+      /* Customize your table styles here */
+      .table-responsive {
+        max-height: 296px;
+        overflow-y: auto;
+        margin-bottom: 30px;
+        overflow-y: scroll;
+      }
+      .custom-table {
+        width: 100%;
+      }
+      .container {
+        margin-top: 50px;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      #file-input-trigger {
+        margin-top: 20px;
+      }
+      /* Customize your footer styles here */
       footer {
-        font-size: 14px;
+        position: fixed;
+        background-color: #343a40;
+        color: #fff;
+        text-align: center;
+        padding: 15px 0;
+        bottom: 0;
+        width: 100%;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div id="title">Picard Recherche Magasin</div>
-    <div class="form-group">
-      <label for="store-number">Entez Le Numéro Du Magasin:</label>
-      <input
-        type="text"
-        class="form-control"
-        id="store-number"
-        placeholder="Entez Le Numéro Du Magasin"
-      />
-    </div>
-    <div class="table-responsive">
-      <table class="table custom-table table-success table-striped">
-        <thead>
-          <tr>
-            <th scope="col">PDV</th>
-            <th scope="col">NOM</th>
-            <th scope="col">TEL</th>
-          </tr>
-        </thead>
-        <tbody id="table-body">
-          <!-- Table rows will be added dynamically with JavaScript -->
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <footer>
-    <p>Copyright &copy; 2024 Zakaria Nadouf. All Rights Reserved.</p>
-  </footer>
-  <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <!-- Bootstrap JS -->
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <!-- JavaScript to populate the table from Excel file -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
-  <script>
-    // Function to read Excel file and populate the table
-    function populateTableFromExcel(fileUrl) {
-      fetch(fileUrl)
-        .then((response) => response.arrayBuffer())
-        .then((buffer) => {
-          var data = new Uint8Array(buffer);
-          var workbook = XLSX.read(data, { type: "array" });
-          var sheetName = workbook.SheetNames[0];
-          var sheet = workbook.Sheets[sheetName];
-          var jsonData = XLSX.utils.sheet_to_json(sheet, {
-            header: 1,
-            raw: false,
-          });
-          console.log(jsonData); // Debugging message to check the data
-          populateTable(jsonData);
-        })
-        .catch((error) => console.error("Error loading Excel file:", error));
-    }
-
-    // Load data from Excel file when the page loads
-    $(document).ready(function () {
-      // Specify the file URL of your Excel file on GitHub
-      const fileUrl = "https://zackpolska.github.io/PIC/Mag.xlsx";
-      populateTableFromExcel(fileUrl);
-    });
-
-    // Function to populate the table with data
-    function populateTable(data) {
-      console.log("Data received:", data); // Debugging message to check the received data
-      var tbody = $("#table-body");
-      tbody.empty(); // Clear existing rows
-      // Check if data is defined and is an array
-      if (Array.isArray(data)) {
-        // Iterate over each row in the data starting from the first row (index 0)
-        for (var i = 0; i < data.length; i++) {
-          var row = data[i];
-          console.log("Processing row", i, ":", row); // Debugging message to check the current row
-          var newRow = "<tr>";
-          // Iterate over each cell in the row starting from the first column (index 0)
-          for (var j = 0; j < row.length; j++) {
-            newRow += "<td>" + (row[j] || "") + "</td>"; // If the cell is empty, keep it empty
-          }
-          newRow += "</tr>";
-          tbody.append(newRow); // Append the row to the table body
+      footer p {
+        margin: 0;
+      }
+      /* Responsive Styles */
+      @media only screen and (max-width: 600px) {
+        footer {
+          font-size: 14px;
         }
-      } else {
-        console.error("Error: Data is not an array or is undefined.");
       }
-    }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="title">Picard Recherche Magasin</div>
+      <div class="form-group">
+        <label for="store-number">Entez Le Numéro Du Magasin:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="store-number"
+          placeholder="Entez Le Numéro Du Magasin"
+        />
+      </div>
+      <div class="table-responsive">
+        <table class="table custom-table table-dark table-striped">
+          <thead style="position: sticky; top: 0" class="thead-dark">
+            <tr>
+              <th scope="col">PDV</th>
+              <th scope="col">NOM</th>
+              <th scope="col">TEL</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Table rows will be added dynamically with JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <footer>
+      <p>Copyright &copy; 2024 Zakaria Nadouf. All Rights Reserved.</p>
+    </footer>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- JavaScript to populate the table from Excel file -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+    <script>
+      // Function to read Excel file and populate the table
+      function populateTableFromExcel(fileUrl) {
+        fetch(fileUrl)
+          .then((response) => response.arrayBuffer())
+          .then((buffer) => {
+            var data = new Uint8Array(buffer);
+            var workbook = XLSX.read(data, { type: "array" });
+            var sheetName = workbook.SheetNames[0];
+            var sheet = workbook.Sheets[sheetName];
+            var jsonData = XLSX.utils.sheet_to_json(sheet, {
+              header: 1,
+              raw: false,
+            });
+            console.log(jsonData); // Debugging message to check the data
+            populateTable(jsonData);
+          })
+          .catch((error) => console.error("Error loading Excel file:", error));
+      }
 
-    // Filter table rows based on entered store number
-$("#store-number").on("keyup", function () {
-  var input, filter, table, tr, td, i, txtValue;
-  input = $(this).val().toLowerCase();
-  table = document.getElementById("table-body");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[0]; // Adjusted to get the first column (index 0)
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toLowerCase().indexOf(input) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
+      // Load data from Excel file when the page loads
+      $(document).ready(function () {
+        // Specify the file URL of your Excel file on GitHub
+        const fileUrl = "https://zackpolska.github.io/PIC/Mag.xlsx";
+        populateTableFromExcel(fileUrl);
+      });
+
+      // Function to populate the table with data
+      function populateTable(data) {
+        console.log("Data received:", data); // Debugging message to check the received data
+        var tbody = $("#table-body");
+        tbody.empty(); // Clear existing rows
+        // Check if data is defined and is an array
+        if (Array.isArray(data)) {
+          // Iterate over each row in the data starting from the first row (index 0)
+          for (var i = 0; i < data.length; i++) {
+            var row = data[i];
+            console.log("Processing row", i, ":", row); // Debugging message to check the current row
+            var newRow = "<tr>";
+            // Iterate over each cell in the row starting from the first column (index 0)
+            for (var j = 0; j < row.length; j++) {
+              newRow += "<td>" + (row[j] || "") + "</td>"; // If the cell is empty, keep it empty
+            }
+            newRow += "</tr>";
+            tbody.append(newRow); // Append the row to the table body
+          }
+        } else {
+          console.error("Error: Data is not an array or is undefined.");
+        }
       }
-    }
-  }
-});
-</script>
-</body>
+
+      // Filter table rows based on entered store number
+      $("#store-number").on("keyup", function () {
+        var input, filter, table, tr, td, i, txtValue;
+        input = $(this).val().toLowerCase();
+        table = document.getElementById("table-body");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+          td = tr[i].getElementsByTagName("td")[0]; // Adjusted to get the first column (index 0)
+          if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toLowerCase().indexOf(input) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }
+        }
+      });
+    </script>
+  </body>
 </html>
