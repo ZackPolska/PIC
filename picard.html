@@ -146,6 +146,23 @@
     }
 
     // Filter table rows based on entered store number
-    $("#store-number").on("keyup", function () {
-      var input, filter, table, tr, td, i, txtValue;
-     
+$("#store-number").on("keyup", function () {
+  var input, filter, table, tr, td, i, txtValue;
+  input = $(this).val().toLowerCase();
+  table = document.getElementById("table-body");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0]; // Adjusted to get the first column (index 0)
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toLowerCase().indexOf(input) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
